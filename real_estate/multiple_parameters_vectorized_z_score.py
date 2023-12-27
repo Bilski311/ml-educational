@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 def split_train_and_test_data(data):
     np.random.shuffle(data)
     split_index = int(0.8 * len(data))
@@ -54,29 +53,39 @@ def gradient_descent(model, learning_rate, gradient):
 def predict(model, x_test):
     return np.array([np.dot(model['weights'], x_i) + model['bias'] for x_i in x_test])
 
+def z_score_normalization(x):
+    means = np.mean(x, 0)
+    standard_deviations = np.std(x, 0)
+    x[:, 1:-2] = x[:, 1:-2] - means[1:-2]
+    x[:, 1:-2] = x[:, 1:-2] / standard_deviations[1:-2]
+
+    return x, means, standard_deviations
+
+
 data = np.genfromtxt('real_estate.csv', delimiter=',', skip_header=1)
 x_train, y_train, x_test, y_test = split_train_and_test_data(data)
 model = initialize_model(x_train)
-learning_rate = 0.0000001
+learning_rate = 0.0000004
 initial_cost = calculate_cost(x_train, y_train, model)
 print(f'Cost for initial model: {initial_cost}')
+x_train, means, standardad_deviations = z_score_normalization(x_train)
 history = [initial_cost]
+print(x_train)
 for i in range(1000):
     gradient = calculate_gradient(x_train, y_train, model)
     model = gradient_descent(model, learning_rate, gradient)
     cost = calculate_cost(x_train, y_train, model)
+    if (i == 0 or i % 10 == 0):
+        print(f'Weights: {model["weights"]},\nBias: {model["bias"]}')
+        print(f'Cost: {cost}')
     history.append(cost)
-if (i % 100 == 0 or i == 0):
-        print(model)
-        print(cost)
 plt.plot(history)
-print(history)
 plt.title('Cost')
 plt.xlabel('Iteration')
 plt.ylabel('Cost')
 plt.show()
-prediction = predict(model, x_test)
-print(prediction)
-print(y_test)
-print(calculate_cost(x_test, y_test, model))
-
+# prediction = predict(model, x_test)
+# print(prediction)
+# print(y_test)
+# print(calculate_cost(x_test, y_test, model))
+#
