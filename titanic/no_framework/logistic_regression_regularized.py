@@ -1,17 +1,11 @@
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
 
-def split_train_and_test_data(data):
-    np.random.shuffle(data)
-    split_index = int(0.8 * len(data))
-    train_data = data[:split_index]
-    test_data = data[split_index:]
-    x_train = train_data[:, 1:-1]
-    y_train = train_data[:, -1]
-    x_test = test_data[:, 1:-1]
-    y_test = test_data[:, -1]
+def split_X_and_Y(data):
+    x_train = data[:, 2:]
+    y_train = data[:, 0:1]
 
-    return x_train, y_train, x_test, y_test
+    return x_train, y_train
 
 def calculate_cost(x, y, model):
     cost = 0
@@ -53,5 +47,10 @@ def z_score_normalization(x):
     return (0, 0, 0)
 
 
-data = np.genfromtxt('insert_filename.csv', delimiter=',', skip_header=1)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', 200)
+data = pd.read_csv('../data/train.csv', sep=',', header=0)
+print(data)
+# x_train, y_train = split_X_and_Y(data)
+# print(x_train[:5])
 #TRAIN THE MODEL AND TEST IT(DON'T FORGET TO REGULARIZE)
