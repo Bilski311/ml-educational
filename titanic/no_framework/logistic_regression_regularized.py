@@ -77,8 +77,10 @@ def initialize_model(x_train):
 
     return model
 
-def calculate_cost(X, Y, model):
+def calculate_cost(X, Y, model, lambda_):
     cost = 0
+    sum_of_squared_weights = (model['weights'] ** 2).sum()
+    regularization_cost = lambda_ / (2 * X.shape[0]) * sum_of_squared_weights
     # CALCULATE COST
     for i, X_i in enumerate(X):
         z = np.dot(X_i, model['weights']) + model['bias']
@@ -87,7 +89,7 @@ def calculate_cost(X, Y, model):
 
     cost = cost / len(X)
 
-    return cost
+    return cost + regularization_cost
 
 
 def sigmoid(z):
@@ -100,7 +102,7 @@ def calculate_loss(prediction, y):
     return -y * (math.log(prediction + 0.0000000001)) - (1 - y) * (math.log(1 - prediction + 0.000000001))
 
 
-def calculate_gradient(X_train, Y_train, model):
+def calculate_gradient(X_train, Y_train, model, lambda_):
     dw_dx = np.zeros(X_train.shape[1])
     db_dx = 0
     for i, x_i in enumerate(X_train):
@@ -108,6 +110,7 @@ def calculate_gradient(X_train, Y_train, model):
         prediction = sigmoid(z)
         error = prediction - Y_train[i]
         dw_dx += error * x_i
+        dw_dx += (lambda_ / len(X_train)) * model['weights']
         db_dx += error
 
     return {
@@ -144,21 +147,25 @@ X_train, means, standard_deviations = z_score_normalization(X_train)
 print(X_train)
 print(X_train.shape)
 print(Y_train.shape)
-#TRAIN THE MODEL AND TEST IT(DON'T FORGET TO REGULARIZE)
+
+#TRAIN THE MODEL
 model = initialize_model(X_train)
 print(model)
-initial_cost = calculate_cost(X_train, Y_train, model)
-print(f'Initial cost: {initial_cost}')
 learning_rate = 0.003
+lambda_ = 1
+initial_cost = calculate_cost(X_train, Y_train, model, lambda_)
+print(f'Initial cost: {initial_cost}')
 history = [initial_cost]
 for i in range(1000):
-    gradient = calculate_gradient(X_train, Y_train, model)
+    gradient = calculate_gradient(X_train, Y_train, model, lambda_)
     model = gradient_descent(model, learning_rate, gradient)
-    history.append(calculate_cost(X_train, Y_train, model))
+    if (i % 10 == 0):
+        cost = calculate_cost(X_train, Y_train, model, lambda_)
+        print(f'Cost at iteration {i}: {cost}')
+        history.append(cost)
 plt.plot(history)
 plt.title('Cost')
 plt.xlabel('Iteration')
 plt.ylabel('Cost')
 plt.show()
 print(f'Final cost: {history[-1]}')
-
