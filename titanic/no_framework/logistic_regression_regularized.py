@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import math
 import matplotlib.pyplot as plt
-
+from my_custom_educational_framework import z_score_normalization
 
 def split_X_and_Y(data):
     X_train = data.iloc[:, 2:]
@@ -127,14 +127,6 @@ def gradient_descent(model, learning_rate, gradient):
 def predict(model, x_test):
     #CALCULATE PREDICTION
     return np.zeros(x_test.shape()[0])
-
-def z_score_normalization(X):
-    means = X.mean(0)
-    standard_deviations = X.std(0)
-    X = X - means
-    X = X / standard_deviations
-
-    return (X, means, standard_deviations)
 
 
 pd.set_option('display.max_columns', None)
