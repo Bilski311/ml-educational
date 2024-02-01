@@ -87,3 +87,8 @@ neural_network = NeuralNetwork(X_train.shape[1], [
 ])
 print(neural_network)
 neural_network.predict(X_train[0:2])
+test_layer = Layer(units=4, activation='relu')
+test_layer.initialize_layer(weights=np.zeros((2,2)), biases=np.zeros(2,))
+
+test_neural_network = NeuralNetwork(X_train.shape[1])
+print(test_neural_network)
