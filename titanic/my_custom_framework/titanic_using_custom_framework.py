@@ -86,3 +86,4 @@ neural_network = NeuralNetwork(X_train.shape[1], [
     Layer(units=1, activation='sigmoid')
 ])
 print(neural_network)
+neural_network.predict(X_train[0:2])
