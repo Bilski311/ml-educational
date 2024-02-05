@@ -1,7 +1,5 @@
 import numpy as np
 import pandas as pd
-import math
-import matplotlib.pyplot as plt
 from my_custom_educational_framework import z_score_normalization
 from my_custom_educational_framework import NeuralNetwork, Layer
 
@@ -73,22 +71,13 @@ def convert_embarked(embarked):
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 200)
 data = pd.read_csv('../data/train.csv', sep=',', header=0)
-print(data)
 X_train, Y_train = split_X_and_Y(data)
 X_train = prepare_X(X_train)
 X_train, means, standard_deviations = z_score_normalization(X_train)
-print(X_train)
-print(X_train.shape)
-print(Y_train.shape)
 neural_network = NeuralNetwork(X_train.shape[1], [
     Layer(units=64, activation='relu'),
     Layer(units=64, activation='relu'),
     Layer(units=1, activation='sigmoid')
 ])
 print(neural_network)
-neural_network.predict(X_train[0:2])
-test_layer = Layer(units=4, activation='relu')
-test_layer.initialize_layer(weights=np.zeros((2,2)), biases=np.zeros(2,))
-
-test_neural_network = NeuralNetwork(X_train.shape[1])
-print(test_neural_network)
+print(f'Prediction: {neural_network.predict(X_train[0:5])}')

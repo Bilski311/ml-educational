@@ -9,8 +9,8 @@ class Layer:
 
     def initialize_layer(self, number_of_inputs=None, weights=None, biases=None):
         if number_of_inputs is not None:
-            self.weights = np.zeros((number_of_inputs, self.units))
-            self.biases = np.zeros((self.units,))
+            self.weights = np.random.rand(number_of_inputs, self.units)
+            self.biases = np.random.rand(self.units)
         if number_of_inputs is None and weights is not None and biases is not None:
             print(weights)
             print(biases)
@@ -19,6 +19,9 @@ class Layer:
             self.biases = biases
 
     def compute_output_for_layer(self, X):
-        print(X)
-        print(self.weights)
-        print(self.biases)
+        print(f'X: {X}')
+        print(f'Weights: {self.weights}')
+        print(self.weights.shape)
+        product = np.matmul(X, self.weights)
+        print(product)
+        return product + self.biases

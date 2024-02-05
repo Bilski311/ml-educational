@@ -11,7 +11,6 @@ class NeuralNetwork:
             else:
                 layer.initialize_layer(self.layers[layer_number - 1].units)
         if self._is_initialized_from_arrays(layers, layers_weights, layers_biases):
-            print("Is initialized from arrays")
             for layer_number, layer_weights in enumerate(layers_weights):
                 layer = Layer(activation='relu')
                 layer.initialize_layer(weights=layer_weights, biases=layers_biases[layer_number])
@@ -29,13 +28,11 @@ class NeuralNetwork:
         return True
 
     def predict(self, X):
-        print(X)
         input_to_next_layer = X
         for layer_number, layer in enumerate(self.layers):
-            print(f'Input to layer: {input_to_next_layer}\n of shape {input_to_next_layer.shape}')
-            print(f'Layer: {layer.weights}\n of shape {layer.weights.shape}')
-            input_to_next_layer = np.matmul(input_to_next_layer, layer.weights)
-            print(input_to_next_layer)
+            input_to_next_layer = layer.compute_output_for_layer(input_to_next_layer)
+
+        return input_to_next_layer
 
 
 
