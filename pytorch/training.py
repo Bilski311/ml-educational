@@ -45,33 +45,37 @@ def test_loop(dataloader, model, loss_function):
         print(f"Test Error: \n Accuracy: {(100 * correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
 
 
-learning_rate = 1e-3
-batch_size = 64
-epochs = 20
+if __name__ == '__main__':
+    learning_rate = 1e-3
+    batch_size = 64
+    epochs = 10
 
-training_data = datasets.FashionMNIST(
-    root="data",
-    download=True,
-    train=True,
-    transform=ToTensor(),
-    target_transform=Lambda(to_one_hot_encoding))
+    training_data = datasets.FashionMNIST(
+        root="data",
+        download=True,
+        train=True,
+        transform=ToTensor(),
+        target_transform=Lambda(to_one_hot_encoding))
 
-test_data = datasets.FashionMNIST(
-    root="data",
-    download=True,
-    transform=ToTensor(),
-    target_transform=Lambda(to_one_hot_encoding)
-)
+    test_data = datasets.FashionMNIST(
+        root="data",
+        download=True,
+        train=False,
+        transform=ToTensor(),
+        target_transform=Lambda(to_one_hot_encoding)
+    )
 
-train_dataloader = DataLoader(training_data, batch_size=batch_size)
-test_dataloader = DataLoader(test_data, batch_size=batch_size)
+    train_dataloader = DataLoader(training_data, batch_size=batch_size)
+    test_dataloader = DataLoader(test_data, batch_size=batch_size)
 
-model = NeuralNetwork()
-loss_function = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+    model = NeuralNetwork()
+    loss_function = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
-for epoch in range(1, epochs + 1):
-    print(f"Epoch {epoch}\n-------------------")
-    train_loop(train_dataloader, model, loss_function, optimizer)
-    test_loop(test_dataloader, model, loss_function)
-print("Done!")
+    for epoch in range(1, epochs + 1):
+        print(f"Epoch {epoch}\n-------------------")
+        train_loop(train_dataloader, model, loss_function, optimizer)
+        test_loop(test_dataloader, model, loss_function)
+    print("Done!")
+    print("Saving the model...")
+    torch.save(model, 'model.pth')
